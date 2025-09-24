@@ -1,0 +1,56 @@
+<configuration>
+	<property>
+		<name>dfs.replication</name>
+		<value>1</value>
+	</property>
+	<property>
+		<name>dfs.block.access.token.enable</name>
+		<value>true</value>
+	</property>
+	
+	<property>
+		<name>dfs.namenode.kerberos.principal</name>
+		<value>nn/hadoop@EXAMPLE.COM</value>
+	</property>
+	<property>
+		<name>dfs.namenode.keytab.file</name>
+		<value>/etc/security/keytabs/nn.keytab</value>
+	</property>
+	
+	<property>
+		<name>dfs.datanode.kerberos.principal</name>
+		<value>dn/hadoop@EXAMPLE.COM</value>
+	</property>
+	<property>
+		<name>dfs.datanode.keytab.file</name>
+		<value>/etc/security/keytabs/dn.keytab</value>
+	</property>
+	
+	<property>
+		<name>dfs.web.authentication.kerberos.principal</name>
+		<value>HTTP/hadoop@EXAMPLE.COM</value>
+	</property>
+	<property>
+		<name>dfs.web.authentication.kerberos.keytab</name>
+		<value>/etc/security/keytabs/http.keytab</value>
+	</property>
+	<property>
+		<name>dfs.web.authentication.filter</name>
+		<value>org.apache.hadoop.security.authentication.server.AuthenticationFilter</value>
+	</property>
+	<property>
+		<name>dfs.web.authentication.handler</name>
+		<value>org.apache.hadoop.security.authentication.server.KerberosAuthenticationHandler</value>
+	</property>
+	
+	<property>
+  <name>dfs.data.transfer.protection</name>
+  <value>authentication</value>
+</property>
+<property>
+  <name>ignore.secure.ports.for.testing</name>
+  <value>true</value>
+</property>
+
+	
+</configuration>

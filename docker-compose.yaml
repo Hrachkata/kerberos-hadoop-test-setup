@@ -21,7 +21,6 @@ services:
     depends_on:
       - kdc
     container_name: hadoop
-    user: root
     hostname: hadoop
     ports:
       - 9870:9870   # Web UI and WebHDFS
@@ -38,10 +37,20 @@ services:
       - ./hadoop-conf:/opt/hadoop/etc/hadoop
       - ./keytabs:/etc/security/keytabs
       - ./hadoop-data:/tmp/hadoop-root
+      - ./hadoop-log:/var/log/hadoop
     command: >
       bash -c "
-        sleep 5 &&
+        sleep 10 &&
         sudo sed -i 's/SERVER/test-kdc/g' /etc/krb5.conf &&
+        sudo chown hadoop:hadoop /etc/security/keytabs/*.keytab || true &&
+        sudo chmod 600 /etc/security/keytabs/*.keytab || true &&
+        kinit -kt /etc/security/keytabs/nn.keytab nn/hadoop@EXAMPLE.COM &&
+        sudo rm -rf /tmp/hadoop-root/dfs/data/* &&
+        sudo rm -rf /tmp/hadoop-root/dfs/name/* &&
+        sudo mkdir -p /tmp/hadoop-root/dfs/data &&
+        sudo mkdir -p /tmp/hadoop-root/dfs/name &&
+        sudo chown -R hadoop:hadoop /tmp/hadoop-root &&
+        sudo chmod -R 700 /tmp/hadoop-root &&
         hdfs namenode -format -force &&
         hdfs --daemon start namenode &&
         hdfs --daemon start datanode &&

@@ -5,12 +5,22 @@ sleep 5  # wait for KDC to initialize
 
 # create test user and HTTP principal
 kadmin.local <<EOF
-addprinc -pw testpw testuser
-addprinc -randkey HTTP/localhost@EXAMPLE.COM
-ktadd -k /tmp/hadoop-http.keytab HTTP/localhost@EXAMPLE.COM
+addprinc -randkey nn/hadoop@EXAMPLE.COM
+ktadd -k /tmp/nn.keytab nn/hadoop@EXAMPLE.COM
+
+addprinc -randkey dn/hadoop@EXAMPLE.COM
+ktadd -k /tmp/dn.keytab dn/hadoop@EXAMPLE.COM
+
+addprinc -randkey HTTP/hadoop@EXAMPLE.COM
+ktadd -k /tmp/http.keytab HTTP/hadoop@EXAMPLE.COM
+
+addprinc -randkey hadoop/hadoop@EXAMPLE.COM
+ktadd -k /tmp/client.keytab hadoop/hadoop@EXAMPLE.COM
+
+addprinc -pw 123 test@EXAMPLE.COM
 quit
 EOF
 
-cp /tmp/hadoop-http.keytab /keytabs/
+cp /tmp/*.keytab /keytabs/
 # keep container alive for debugging / volume copy
 tail -f /dev/null
