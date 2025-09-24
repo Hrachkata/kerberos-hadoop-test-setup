@@ -1,0 +1,59 @@
+version: "3"
+services:
+  kdc:
+    image: apache/ozone-testkrb5:latest
+    cap_add:
+      - SYS_NICE
+    container_name: test-kdc
+    hostname: kdc.ozone
+    networks:
+      - hadoop-net
+    ports:
+      - 88:88
+      - 749:749
+    volumes:
+      - ./setup-kdc.sh:/setup-kdc.sh
+      - ./keytabs:/keytabs
+    command: bash /setup-kdc.sh
+    
+  hadoop:
+    image: apache/hadoop:3
+    depends_on:
+      - kdc
+    container_name: hadoop
+    user: root
+    hostname: hadoop
+    ports:
+      - 9870:9870   # Web UI and WebHDFS
+      - 9864:9864
+      - 9866:9866
+      - 9867:9867
+      - 9000:9000   # HDFS client RPC
+    networks:
+      - hadoop-net
+    environment:
+      - ENSURE_NAMENODE_DIR=/tmp/hadoop-root/dfs/name
+      - DFS_DATANODE_HOSTNAME=localhost
+    volumes:
+      - ./hadoop-conf:/opt/hadoop/etc/hadoop
+      - ./keytabs:/etc/security/keytabs
+      - ./hadoop-data:/tmp/hadoop-root
+    command: >
+      bash -c "
+        sleep 5 &&
+        sudo sed -i 's/SERVER/test-kdc/g' /etc/krb5.conf &&
+        hdfs namenode -format -force &&
+        hdfs --daemon start namenode &&
+        hdfs --daemon start datanode &&
+        hdfs dfs -mkdir /root &&
+        hdfs dfs -mkdir /root/testFolder1 &&
+        hdfs dfs -mkdir /root/testFolder2 &&
+        hdfs dfs -chown dr.who:supergroup /root &&
+        hdfs dfs -chown dr.who:supergroup /root/testFolder1 &&
+        hdfs dfs -chown dr.who:supergroup /root/testFolder2 &&
+        tail -f /dev/null
+      "
+      
+networks:
+  hadoop-net:
+    driver: bridge
