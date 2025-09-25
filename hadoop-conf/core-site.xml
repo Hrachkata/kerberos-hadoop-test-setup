@@ -11,4 +11,17 @@
 		<name>hadoop.security.authorization</name>
 		<value>true</value>
 	</property>
+	
+<property>
+  <name>hadoop.http.authentication.type</name>
+  <value>kerberos</value>
+</property>
+<property>
+  <name>hadoop.http.authentication.kerberos.principal</name>
+  <value>HTTP/_HOST@EXAMPLE.COM</value>
+</property>
+<property>
+  <name>hadoop.http.authentication.kerberos.keytab</name>
+  <value>/etc/security/keytabs/http.keytab</value>
+</property>
 </configuration>
