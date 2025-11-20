@@ -2,7 +2,6 @@
 # start krb5kdc in the background
 krb5kdc &
 sleep 5  # wait for KDC to initialize
-
 # create test user and HTTP principal
 kadmin.local <<EOF
 addprinc -randkey nn/hadoop@EXAMPLE.COM
