@@ -1,5 +1,6 @@
 #!/bin/bash
 # start krb5kdc in the background
+# THIS THING HAS TO BE UNIX(LF)
 krb5kdc &
 sleep 5  # wait for KDC to initialize
 # create test user and HTTP principal
