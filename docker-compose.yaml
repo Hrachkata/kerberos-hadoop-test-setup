@@ -33,7 +33,8 @@ services:
       echo 'krb5-config krb5-config/read_config boolean true' | debconf-set-selections &&
       apt-get install -y krb5-user &&
       apt-get install -y curl &&
-      tail -f /dev/null
+      tail -f /dev/null &&
+      curl --negotiate -i -v "http://hadoop:9870/webhdfs/v1/?op=GETDELEGATIONTOKEN&renewer=hadoop"
       "
       
   hadoop:
